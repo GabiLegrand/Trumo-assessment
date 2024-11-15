@@ -13,6 +13,7 @@ payload = {
     "password": "password123" # Mandatory
 }
 response = requests.post(url, json=payload)
+print(response.json())
 if response.status_code < 300:
     user_data = response.json()
     api_key = user_data['api_key']
