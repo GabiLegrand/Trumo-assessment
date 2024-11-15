@@ -65,7 +65,7 @@ python ./manage.py migrate
 python ./manage.py runserver 5000
 ```
 
-### Tips for Production Deployment without docker
+### Tips for Production Deployment 
 
 1. If you plan to deploy this Django project using **Passenger WSGI**, configure the `application` in the `wsgi.py` file as follows:  
 
