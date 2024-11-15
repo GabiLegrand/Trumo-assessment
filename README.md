@@ -1,5 +1,5 @@
 # Description
-**Note** : The base of the assignement was done in 3h20 mins
+**Note** : The base of the assignement was done in 3h20 mins, the dockerized version took me 4h40 due to troubleshooting the django/postgres integration
 
 ## Context  
 This repository was created as part of an assessment during a recruitment process involving Gabriel LUDLE (Owner) and Trumo. The project was designed and completed within a 4-hour timeframe, as initially estimated by Gabriel before starting the task.
@@ -34,9 +34,21 @@ For this project, I chose Django as the backend framework. Django is my go-to fr
 **/!\ for the easy setup, i have left the `.env` file in the repo, but i would not have done the same for a production grade repo**\
 To run this project on your local machine, follow these steps:
 
-### Steps to Set Up  
+### Steps to Set Up with docker 
 1. Clone the repository to your local environment.  
 2. Navigate to the root folder and execute the following commands:  
+```shell
+docker-compose up --build
+```
+be sure to have docker installed on your machine
+
+### Steps to Set Up local instance (Without docker)
+1. Clone the repository to your local environment.  
+2. In the `.env` file, located in `./bookmanager/.env`, change the value of `USE_LOCAL` by 
+```shell
+USE_LOCAL=True
+```
+3. Navigate to the root folder and execute the following commands:  
 
 ```bash
 # Install the required dependencies
@@ -53,6 +65,21 @@ python ./manage.py migrate
 python ./manage.py runserver 5000
 ```
 
+### Tips for Production Deployment without docker
+
+1. If you plan to deploy this Django project using **Passenger WSGI**, configure the `application` in the `wsgi.py` file as follows:  
+
+```python
+import engine.wsgi
+application = engine.wsgi.application
+```
+
+This configuration ensures the application integrates smoothly with the Passenger WSGI server for production use. 
+
+2. In the `.env` file, located in `./bookmanager/.env`, change the value of `DEBUG` by 
+```shell
+DEBUG=False
+```
 
 ## Runing unit test
 
@@ -80,17 +107,6 @@ python manage.py test api_auth.tests
 ```
 
 These commands allow for targeted and comprehensive testing of the application's individual components.
-
-### Tips for Production Deployment  
-
-If you plan to deploy this Django project using **Passenger WSGI**, configure the `application` in the `wsgi.py` file as follows:  
-
-```python
-import engine.wsgi
-application = engine.wsgi.application
-```
-
-This configuration ensures the application integrates smoothly with the Passenger WSGI server for production use.
 
 ---
 
