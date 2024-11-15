@@ -1,4 +1,5 @@
 # Description
+**Note** : The base of the assignement was done in 3h20 mins
 
 ## Context  
 This repository was created as part of an assessment during a recruitment process involving Gabriel LUDLE (Owner) and Trumo. The project was designed and completed within a 4-hour timeframe, as initially estimated by Gabriel before starting the task.
@@ -51,6 +52,34 @@ python ./manage.py migrate
 # Run the local server on port 5000 (or replace with your desired port)
 python ./manage.py runserver 5000
 ```
+
+
+## Runing unit test
+
+The API utilizes Django's native testing framework, ensuring a robust and systematic testing process. Below are the commands for running tests:
+
+### Running All Tests
+To execute all tests within the application, use the following commands:
+```bash
+cd ./bookmanager  # If not already in the directory
+python manage.py test
+```
+
+### Testing Only the Book API
+To test functionalities specific to the Book API, run:
+```bash
+cd ./bookmanager  # If not already in the directory
+python manage.py test books.tests
+```
+
+### Testing Only the User Registration API
+For testing features related to user registration and authentication, use:
+```bash
+cd ./bookmanager  # If not already in the directory
+python manage.py test api_auth.tests
+```
+
+These commands allow for targeted and comprehensive testing of the application's individual components.
 
 ### Tips for Production Deployment  
 
@@ -317,34 +346,6 @@ Authorization: Api-Key <your_api_key>
   - **404 Not Found**: The book does not exist or does not belong to the authenticated user.
 
 ---
-
-# Testing the API
-
-The API utilizes Django's native testing framework, ensuring a robust and systematic testing process. Below are the commands for running tests:
-
-### Running All Tests
-To execute all tests within the application, use the following commands:
-```bash
-cd ./bookmanager  # If not already in the directory
-python manage.py test
-```
-
-### Testing Only the Book API
-To test functionalities specific to the Book API, run:
-```bash
-cd ./bookmanager  # If not already in the directory
-python manage.py test books.tests
-```
-
-### Testing Only the User Registration API
-For testing features related to user registration and authentication, use:
-```bash
-cd ./bookmanager  # If not already in the directory
-python manage.py test api_auth.tests
-```
-
-These commands allow for targeted and comprehensive testing of the application's individual components.
-
 # Detail about the unit test
 This section provides an overview of the unit tests included in the project. Please note that this information is included solely for the purpose of the assignment and would not typically be part of a production-grade project.
 
