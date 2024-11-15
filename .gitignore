@@ -1,0 +1,70 @@
+# Python cache files
+*.pyc
+*.pyo
+__pycache__/
+
+# Django specific
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+db.sqlite3
+
+# Environments
+.env
+.venv/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Coverage
+.coverage
+*.cover
+.hypothesis/
+.tox/
+.cache/
+coverage.xml
+nosetests.xml
+*.coverage
+*.log
+
+# Pytest
+.pytest_cache/
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*~
+
+# Byte-compiled / optimized / DLL files
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# Static and media files
+/static/
+media/
+
+# Migrations
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Tests
+.pytest_cache/
+
+# Local configuration files
+config.local.yaml
