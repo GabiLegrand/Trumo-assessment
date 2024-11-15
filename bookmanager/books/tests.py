@@ -127,3 +127,126 @@ class BookAPITestCase(TestCase):
         response = self.client.get(self.book_list_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 0)
+
+    ########### UPDATE TEST #############
+
+    def test_update_with_valid_payload_with_api_key1(self):
+        """Create with API key 1 and update valid with API key 1"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book
+        payload = {
+            "title": "Original Title",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Update the book
+        update_payload = {
+            "title": "Updated Title",
+            "author": "Author One",
+            "published_date": "2021-02-01",
+            "isbn": "0987654321098"
+        }
+        update_response = self.client.put(self.book_detail_url(book_id), update_payload, format='json')
+        self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(update_response.data['title'], "Updated Title")
+
+    def test_update_with_invalid_isbn(self):
+        """Update previously created book with invalid ISBN"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book
+        payload = {
+            "title": "Book to Update",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Update with invalid ISBN
+        update_payload = {
+            "title": "Book to Update",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "invalid-isbn"
+        }
+        update_response = self.client.put(self.book_detail_url(book_id), update_payload, format='json')
+        self.assertEqual(update_response.status_code, 400)
+        self.assertIn('isbn', update_response.data)
+
+    def test_update_with_invalid_date_format(self):
+        """Update previously created book with invalid date format"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book
+        payload = {
+            "title": "Book to Update",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Update with invalid date format
+        update_payload = {
+            "title": "Book to Update",
+            "author": "Author One",
+            "published_date": "invalid-date",
+            "isbn": "1234567890123"
+        }
+        update_response = self.client.put(self.book_detail_url(book_id), update_payload, format='json')
+        self.assertEqual(update_response.status_code, 400)
+        self.assertIn('published_date', update_response.data)
+
+    def test_update_with_empty_string_for_field(self):
+        """Update previously created book with empty string for required field"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book
+        payload = {
+            "title": "Book to Update",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Update with empty 'title'
+        update_payload = {
+            "title": "",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        update_response = self.client.put(self.book_detail_url(book_id), update_payload, format='json')
+        self.assertEqual(update_response.status_code, 400)
+        self.assertIn('title', update_response.data)
+
+
+    def test_update_with_valid_payload_but_with_api_key2(self):
+        """Try updating previously created book with valid payload but with API key 2; should be denied"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book with user1
+        payload = {
+            "title": "User1's Book",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Attempt to update with user2's API key
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key2)
+        update_payload = {
+            "title": "Attempted Update",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        update_response = self.client.put(self.book_detail_url(book_id), update_payload, format='json')
+        self.assertEqual(update_response.status_code, 404)  # Should be denied
