@@ -31,7 +31,7 @@ For this project, I chose Django as the backend framework. Django is my go-to fr
 
 # Installation
 ## Running the Project Locally  
-
+**/!\ for the easy setup, i have left the `.env` file in the repo, but i would not have done the same for a production grade repo**\
 To run this project on your local machine, follow these steps:
 
 ### Steps to Set Up  

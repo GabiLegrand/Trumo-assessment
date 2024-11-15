@@ -12,7 +12,8 @@ __pycache__/
 db.sqlite3
 
 # Environments
-.env
+# .env should not be added 
+# .env 
 .venv/
 venv/
 ENV/
