@@ -120,20 +120,20 @@ if __name__ == "__main__":
     test_create_book_wrong()
 
 
-    # # List all books
-    # test_list_books()
+    # List all books
+    test_list_books()
 
-    # # Retrieve a specific book (Update the ID after testing create)
-    # test_get_book(1)
+    # Retrieve a specific book (Update the ID after testing create)
+    test_get_book(1)
 
-    # # Update a specific book
-    # test_update_book(1)
+    # Update a specific book
+    test_update_book(1)
 
-    # # Partially update a specific book
-    # test_partial_update_book(1)
+    # Partially update a specific book
+    test_partial_update_book(1)
 
-    # # Delete a specific book
-    # test_delete_book(1)
+    # Delete a specific book
+    test_delete_book(1)
 
-    # # Verify the book is deleted by listing all books again
-    # test_list_books()
+    # Verify the book is deleted by listing all books again
+    test_list_books()

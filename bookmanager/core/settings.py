@@ -31,9 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'api_auth',
     'books',
     'rest_framework',
-    # 'rest_framework_api_key',
+    'rest_framework_api_key',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,8 +80,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework_api_key.permissions.HasAPIKey',
-    ]
+    ],
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework_api_key.permissions.HasAPIKey',
+    ],
 }
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
