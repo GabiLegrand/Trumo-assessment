@@ -2,3 +2,4 @@ django
 mysqlclient
 djangorestframework
 djangorestframework-api-key==2.*
+requests
