@@ -250,3 +250,41 @@ class BookAPITestCase(TestCase):
         }
         update_response = self.client.put(self.book_detail_url(book_id), update_payload, format='json')
         self.assertEqual(update_response.status_code, 404)  # Should be denied
+
+
+    def test_delete_with_api_key1(self):
+        """Create with API key 1 then delete with API key 1"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book
+        payload = {
+            "title": "Book to Delete",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Delete the book
+        delete_response = self.client.delete(self.book_detail_url(book_id))
+        self.assertEqual(delete_response.status_code, 204)
+        self.assertEqual(Book.objects.count(), 0)
+
+    def test_delete_with_api_key2_should_be_denied(self):
+        """Create with API key 1 then delete with API key 2; should be denied"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book
+        payload = {
+            "title": "Book to Delete",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+            "isbn": "1234567890123"
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Attempt to delete with user2's API key
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key2)
+        delete_response = self.client.delete(self.book_detail_url(book_id))
+        self.assertEqual(delete_response.status_code, 404)  # Should be denied
+        self.assertEqual(Book.objects.count(), 1)
