@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 
 class Book(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="books")  # Link to User
+
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     published_date = models.DateField(null=True, blank=True)

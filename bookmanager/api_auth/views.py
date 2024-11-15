@@ -5,6 +5,11 @@ from rest_framework import status
 from rest_framework_api_key.models import APIKey
 
 class CreateUserAPIView(APIView):
+    """
+    For simplicity, this route allow the creation of an user and create automatically an api key
+    This route is only for the assessment and simplify the authentification process to have an 
+    multi user api
+    """
     authentication_classes = []  # Disable authentication
     permission_classes = []  # Disable permission checks
 

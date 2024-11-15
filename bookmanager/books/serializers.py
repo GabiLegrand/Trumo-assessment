@@ -6,7 +6,7 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = '__all__'
-        read_only_fields = ['creation_date']  # Mark creation_date as read-only
+        read_only_fields = ['creation_date', 'user']  # Mark creation_date as read-only
 
 
     def validate_isbn(self, value):
