@@ -6,13 +6,12 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = '__all__'
-        read_only_fields = ['creation_date', 'user']  # Mark creation_date as read-only
+        # Mark creation_date as read-only
+        read_only_fields = ['creation_date', 'user']  
 
 
     def validate_isbn(self, value):
-        # Remove "ISBN " prefix if present
-        clean_value = value.upper().replace("ISBN ", "").strip() if value else value
-
-        if value and not re.match(r'^\d{10}(\d{3})?$', clean_value):  # Allow 10 or 13 digit ISBN
-            raise serializers.ValidationError("ISBN must be either a 10 or 13-digit number.")
+        # Regex that check if the value is only 10 or 13 integer long
+        if value and not re.match(r'^\d{10}(\d{3})?$', value):  
+            raise serializers.ValidationError("ISBN must be a 10 or 13 digit integer")
         return value
