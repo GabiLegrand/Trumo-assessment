@@ -1,139 +1,81 @@
 import requests
+import random
+BASE_URL = "http://127.0.0.1:5000/"  # Update this with your actual API URL
 
-BASE_URL = "http://127.0.0.1:5000/books/"  # Update this with your actual API URL
+### Python Examples for api usage 
 
-def make_request(payload):
+# **Register a New User**
+rand_number = random.randint(0,1000) # Add random number to allow multiple usage of this test script
+url =  BASE_URL + "api/register/"
+payload = {
+    "username": f"testuser_{rand_number}" , # Mandatory
+    "email": "testuser@example.com", # Mandatory
+    "password": "password123" # Mandatory
+}
+response = requests.post(url, json=payload)
+if response.status_code < 300:
+    user_data = response.json()
+    api_key = user_data['api_key']
+    print("Successful creation of a new user, status code :", response.status_code)
+else :
+    raise Exception('Error, the creation of the new user failed')
 
-    response = requests.post(BASE_URL, json=payload)
-    print("Status Code:", response.status_code)
-    print("Response:", response.json())
+########
+url = BASE_URL + "books/"
+# Add the api-key header to all request otherwise, the api will answer "unauthorized"
+headers = {
+    "Authorization": f"Api-Key {api_key}"
+}
+# Create a Book
 
-def test_create_book():
-    print("## Testing book creation isbn 10...")
-    payload = {
-        "title": "Test book",
-        "author": "Gabriel ludel",
-        "published_date": "1998-07-14",
-        "isbn": "1234567890",
-    }
-    make_request(payload)
-    print("## Testing book creation isbn 13...")
-    payload = {
-        "title": "Test book",
-        "author": "Gabriel ludel",
-        "published_date": "1998-07-14",
-        "isbn": "1234567890123",
-    }
-    make_request(payload)
+payload = {
+    "title": "Book Title", # Mandatory
+    "author": "Author Name", # Mandatory
+    "published_date": "2021-01-01", # Optional, YYYY-MM-DD format only
+    "isbn": "1234567890123" # Optional, 10 or 13 digit only
+}
+response = requests.post(url, headers=headers, json=payload)
+if response.status_code < 300:
+    book_data = response.json()
+    book_id = book_data['id']
+    print("Successful creation of a new book, status code :", response.status_code)
+else :
+    raise Exception('Error, the creation of the new book failed')
 
-def test_create_book_wrong():
-    print("## Testing book creation wrong isbn...")
-    payload = {
-        "title": "Test book",
-        "author": "Gabriel ludel",
-        "published_date": "1998-07-14",
-        "isbn": "1234",
-    }
-    make_request(payload)
-    
-    print("## Testing book creation no publish date...")
-    payload = {
-        "title": "Test book",
-        "author": "Gabriel ludel",
-        "isbn": "1234567890123",
-    }
-    make_request(payload)
-    
-    print("## Testing book creation No title...")
-    payload = {
-        "author": "Gabriel ludel",
-        "published_date": "1998-07-14",
-        "isbn": "1234567890123",
-    }
-    make_request(payload)
-    
-    print("## Testing book creation no author...")
-    payload = {
-        "title": "Test book",
-        "author": "Gabriel ludel",
-        "published_date": "1998-07-14",
-        "isbn": "1234567890123",
-    }
-    make_request(payload)
+# Get List of Books
 
-    print("## Testing book creation multiple field missing...")
-    payload = {
-        "published_date": "1998-07-14",
-        "isbn": "1234567890123",
-    }
-    make_request(payload)
+response = requests.get(url, headers=headers)
+if response.status_code < 300:
+    print("Successfully fetched all books, status code :",  response.status_code)
+else :
+    raise Exception('Error, the fetching of the books failed')
 
+# Get Only one Book
 
+response = requests.get(url + f'{book_id}/', headers=headers)
+if response.status_code < 300:
+    print("Successfully fetched one specific book, status code :",  response.status_code)
+else :
+    raise Exception('Error, the fetching of the book failed')
 
-def test_list_books():
-    print("\nTesting listing books...")
-    response = requests.get(BASE_URL)
-    print("Status Code:", response.status_code)
-    print("Response:", response.json())
+# Update a Book
 
-def test_get_book(book_id):
-    print(f"\nTesting retrieving book with ID {book_id}...")
-    response = requests.get(f"{BASE_URL}{book_id}/")
-    print("Status Code:", response.status_code)
-    print("Response:", response.json())
+payload = {
+    "title": "Updated Title",
+    "author": "Updated Author",
+    "published_date": "2022-01-01",
+    "isbn": "0987654321098"
+}
+response = requests.put(url + f'{book_id}/', headers=headers, json=payload)
+if response.status_code < 300:
+    print("Successfully updated the book, status code :",  response.status_code)
+else :
+    raise Exception('Error, the update of the book failed')
 
-def test_update_book(book_id):
-    print(f"\nTesting updating book with ID {book_id}...")
-    payload = {
-        "title": "Updated Django for APIs",
-        "author": "William S. Vincent",
-        "published_date": "2022-03-01",
-        "isbn": "1234567890123",
-    }
-    response = requests.put(f"{BASE_URL}{book_id}/", json=payload)
-    print("Status Code:", response.status_code)
-    print("Response:", response.json())
+# Delete a Book
 
-def test_partial_update_book(book_id):
-    print(f"\nTesting partial update for book with ID {book_id}...")
-    payload = {
-        "title": "Partially Updated Django for APIs"
-    }
-    response = requests.patch(f"{BASE_URL}{book_id}/", json=payload)
-    print("Status Code:", response.status_code)
-    print("Response:", response.json())
-
-def test_delete_book(book_id):
-    print(f"\nTesting deleting book with ID {book_id}...")
-    response = requests.delete(f"{BASE_URL}{book_id}/")
-    print("Status Code:", response.status_code)
-    if response.status_code == 204:
-        print("Book deleted successfully.")
-    else:
-        print("Response:", response.json())
-
-if __name__ == "__main__":
-    # Create a new book
-    print('** creation')
-    test_create_book()
-    print('** creation failtest')
-    test_create_book_wrong()
-
-
-    # List all books
-    test_list_books()
-
-    # Retrieve a specific book (Update the ID after testing create)
-    test_get_book(1)
-
-    # Update a specific book
-    test_update_book(1)
-
-    # Partially update a specific book
-    test_partial_update_book(1)
-
-    # Delete a specific book
-    test_delete_book(1)
-
-    # Verify the book is deleted by listing all books again
-    test_list_books()
+response = requests.delete(url+ f'{book_id}/', headers=headers)
+if response.status_code < 300:
+    print("Successfully deleted the book, status code :",  response.status_code)
+else :
+    raise Exception('Error, the deletion of the book failed')

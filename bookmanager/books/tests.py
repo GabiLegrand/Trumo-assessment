@@ -38,6 +38,31 @@ class BookAPITestCase(TestCase):
         self.assertEqual(Book.objects.count(), 1)
         self.assertEqual(Book.objects.get().user, self.user1)
 
+    def test_create_with_valid_payload_with_valid_api_key_but_without_published_date(self):
+        """Create with valid payload and valid API key"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        payload = {
+            "title": "Valid Book",
+            "author": "Author One",
+            "isbn": "1234567890123"
+        }
+        response = self.client.post(self.book_list_url, payload, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Book.objects.count(), 1)
+        self.assertEqual(Book.objects.get().user, self.user1)
+    
+    def test_create_with_valid_payload_with_valid_api_key_but_without_isbn(self):
+        """Create with valid payload and valid API key"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        payload = {
+            "title": "Valid Book",
+            "author": "Author One",
+            "isbn": "1234567890123"
+        }
+        response = self.client.post(self.book_list_url, payload, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Book.objects.count(), 1)
+        self.assertEqual(Book.objects.get().user, self.user1)
     
     def test_create_with_valid_payload_without_api_key(self):
         """Create with valid payload without API key"""
@@ -139,6 +164,52 @@ class BookAPITestCase(TestCase):
             "author": "Author One",
             "published_date": "2021-01-01",
             "isbn": "1234567890123"
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Update the book
+        update_payload = {
+            "title": "Updated Title",
+            "author": "Author One",
+            "published_date": "2021-02-01",
+            "isbn": "0987654321098"
+        }
+        update_response = self.client.put(self.book_detail_url(book_id), update_payload, format='json')
+        self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(update_response.data['title'], "Updated Title")
+
+    def test_update_with_valid_payload_with_api_key1_but_with_missing_isbn(self):
+        """Create with API key 1 and update valid with API key 1"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book
+        payload = {
+            "title": "Original Title",
+            "author": "Author One",
+            "published_date": "2021-01-01",
+        }
+        create_response = self.client.post(self.book_list_url, payload, format='json')
+        book_id = create_response.data['id']
+
+        # Update the book
+        update_payload = {
+            "title": "Updated Title",
+            "author": "Author One",
+            "published_date": "2021-02-01",
+        }
+        update_response = self.client.put(self.book_detail_url(book_id), update_payload, format='json')
+        self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(update_response.data['title'], "Updated Title")
+    
+
+    def test_update_with_valid_payload_with_api_key1_but_add_missing_isbn(self):
+        """Create with API key 1 and update valid with API key 1"""
+        self.client.credentials(HTTP_AUTHORIZATION='Api-Key ' + self.api_key1)
+        # Create a book
+        payload = {
+            "title": "Original Title",
+            "author": "Author One",
+            "published_date": "2021-01-01",
         }
         create_response = self.client.post(self.book_list_url, payload, format='json')
         book_id = create_response.data['id']
